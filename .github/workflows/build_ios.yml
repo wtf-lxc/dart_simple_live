@@ -17,10 +17,10 @@ jobs:
         with:
           fetch-depth: 1
       
-      - name: Setup Flutter 3.22.0
+      - name: Setup Flutter 3.27.0
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.5"
+          flutter-version: "3.27.0"
           channel: stable
       
       - name: Flutter doctor
