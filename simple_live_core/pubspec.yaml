@@ -17,11 +17,11 @@ dependencies:
   tars_dart:
     path: ./packages/tars_dart
   fixnum: ^1.1.0
-  dart_quickjs:
-    git:
-      url: https://github.com/xiaoyaocz/dart_quickjs
+  # dart_quickjs - DISABLED (requires Dart ^3.10.0 which doesn't exist)
+  # dart_quickjs:
+  #   git:
+  #     url: https://github.com/xiaoyaocz/dart_quickjs
 
 dev_dependencies: 
   lints: ^2.0.0
   test: ^1.21.0
-
