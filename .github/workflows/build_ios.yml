@@ -1,0 +1,57 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ master, ios-build ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: Build iOS IPA
+    runs-on: macos-14
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Setup Flutter 3.22.0
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.22.0
+          channel: stable
+      
+      - name: Flutter doctor
+        run: flutter doctor -v
+      
+      - name: Flutter clean
+        working-directory: simple_live_app
+        run: flutter clean
+      
+      - name: Flutter pub get
+        working-directory: simple_live_app
+        run: flutter pub get
+      
+      - name: Build iOS (no codesign)
+        working-directory: simple_live_app
+        run: flutter build ios --release --no-codesign
+      
+      - name: Create IPA (no sign)
+        working-directory: simple_live_app
+        run: |
+          cd build/ios/iphoneos/
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r ios_no_sign.ipa Payload/
+          mv ios_no_sign.ipa $GITHUB_WORKSPACE/
+        continue-on-error: true
+      
+      - name: Upload IPA artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios
+          path: ios_no_sign.ipa
+          retention-days: 30
