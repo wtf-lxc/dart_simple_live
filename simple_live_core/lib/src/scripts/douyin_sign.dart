@@ -4,6 +4,14 @@
 class DouyinSign {
   // Placeholder - returns empty sign  
   // The actual implementation requires dart_quickjs package
+  
+  /// Get bogus URL - returns original URL without signature
+  /// Note: Without dart_quickjs, we cannot generate the ABogus signature
+  static String getAbogusUrl(String params, String userAgent) {
+    // Return URL without signature - some API endpoints may work without it
+    return params;
+  }
+  
   static String getSign(String params, String userAgent) {
     return "";
   }
