@@ -1,7 +1,29 @@
 // Custom RadioGroup widget for simple_live_app
+// Compatible with flutter_smart_dialog's RadioGroup usage pattern
 import 'package:flutter/material.dart';
 
-/// A custom RadioGroup widget that manages radio button group state
+// InheritedWidget to pass Radio state to children
+class _RadioGroupInherited<T> extends InheritedWidget {
+  final T? groupValue;
+  final ValueChanged<T?>? onChanged;
+
+  const _RadioGroupInherited({
+    required this.groupValue,
+    required this.onChanged,
+    required super.child,
+  });
+
+  static _RadioGroupInherited<T>? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_RadioGroupInherited<T>>();
+  }
+
+  @override
+  bool updateShouldNotify(_RadioGroupInherited<T> old) {
+    return groupValue != old.groupValue || onChanged != old.onChanged;
+  }
+}
+
+/// A RadioGroup widget that provides group state to RadioListTile children
 class RadioGroup<T> extends StatelessWidget {
   final T? groupValue;
   final ValueChanged<T?>? onChanged;
@@ -16,7 +38,7 @@ class RadioGroup<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _RadioGroupProvider<T>(
+    return _RadioGroupInherited<T>(
       groupValue: groupValue,
       onChanged: onChanged,
       child: child,
@@ -24,44 +46,13 @@ class RadioGroup<T> extends StatelessWidget {
   }
 }
 
-class _RadioGroupProvider<T> extends InheritedWidget {
-  final T? groupValue;
-  final ValueChanged<T?>? onChanged;
-
-  const _RadioGroupProvider({
-    required this.groupValue,
-    required this.onChanged,
-    required super.child,
-  });
-
-  static _RadioGroupProvider<T>? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<_RadioGroupProvider<T>>();
+/// Helper to get RadioGroup context
+class RadioGroupContext {
+  static T? getGroupValue<T>(BuildContext context) {
+    return _RadioGroupInherited<T>.of(context)?.groupValue;
   }
 
-  @override
-  bool updateShouldNotify(_RadioGroupProvider<T> old) {
-    return groupValue != old.groupValue || onChanged != old.onChanged;
-  }
-}
-
-/// Extension to help RadioListTile work with RadioGroup
-extension RadioGroupExtensions<T> on RadioListTile<T> {
-  RadioListTile<T> withGroupValue(T? groupValue, ValueChanged<T?>? onChanged) {
-    return RadioListTile<T>(
-      key: key,
-      value: value,
-      groupValue: groupValue,
-      onChanged: onChanged,
-      title: title,
-      subtitle: subtitle,
-      isThreeLine: isThreeLine,
-      dense: dense,
-      visualDensity: visualDensity,
-      shape: shape,
-      tileColor: tileColor,
-      selectedTileColor: selectedTileColor,
-      controlAffinity: controlAffinity,
-      autofocus: autofocus,
-    );
+  static ValueChanged<T?>? getOnChanged<T>(BuildContext context) {
+    return _RadioGroupInherited<T>.of(context)?.onChanged;
   }
 }
