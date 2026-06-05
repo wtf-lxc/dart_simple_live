@@ -35,7 +35,7 @@ dependencies:
   extended_image: ^10.0.1 #拓展Image,支持缓存
   flutter_smart_dialog: ^4.9.8+9 #各种弹窗 Toast/Dialog/Popup
   sticky_headers: ^0.3.0+2 #吸顶
-  lottie: ^3.3.2 #lottie动画
+  lottie: ^3.3.1 #lottie动画
   canvas_danmaku: ^0.2.7
   # ns_danmaku: #弹幕
   #   git:
