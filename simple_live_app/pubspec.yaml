@@ -93,6 +93,12 @@ dependency_overrides:
   canvas_danmaku:
     path: ../third_party/canvas_danmaku
 
+  lottie: 3.3.1
+  volume_controller: 3.2.0
+  screen_brightness: 2.1.2
+  screen_brightness_ios: 2.1.2
+
+
 flutter_launcher_icons:
   android: true
   ios: true
@@ -109,8 +115,3 @@ flutter:
     - assets/images/douyin_emoji/
     - assets/icons/
     - assets/lotties/
-dependency_overrides:
-  lottie: 3.3.1
-  volume_controller: 3.2.0
-  screen_brightness: 2.1.2
-  screen_brightness_ios: 2.1.2
