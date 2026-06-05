@@ -2,7 +2,7 @@ name: Build iOS IPA
 
 on:
   push:
-    branches: [ master, ios-build ]
+    branches: [ master, main, develop ]
   workflow_dispatch:
 
 jobs:
@@ -17,11 +17,12 @@ jobs:
         with:
           fetch-depth: 1
       
-      - name: Setup Flutter 3.27.0
+      - name: Setup Flutter 3.29.3
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.29.3"
           channel: stable
+          cache: true
       
       - name: Flutter doctor
         run: flutter doctor -v
@@ -36,22 +37,33 @@ jobs:
       
       - name: Build iOS (no codesign)
         working-directory: simple_live_app
-        run: flutter build ios --release --no-codesign
+        run: |
+          flutter build ios --release --no-codesign --verbose
       
       - name: Create IPA (no sign)
         working-directory: simple_live_app
+        if: success()
         run: |
           cd build/ios/iphoneos/
-          mkdir -p Payload
-          cp -r Runner.app Payload/
-          zip -r ios_no_sign.ipa Payload/
-          mv ios_no_sign.ipa $GITHUB_WORKSPACE/
-        continue-on-error: true
+          if [ -d "Runner.app" ]; then
+            mkdir -p Payload
+            cp -r Runner.app Payload/
+            zip -r ios_no_sign.ipa Payload/
+            mv ios_no_sign.ipa $GITHUB_WORKSPACE/
+            echo "✅ IPA 创建成功"
+            ls -lh $GITHUB_WORKSPACE/ios_no_sign.ipa
+          else
+            echo "❌ Runner.app 不存在"
+            echo "当前目录内容:"
+            ls -la
+            exit 1
+          fi
       
       - name: Upload IPA artifact
-        if: always()
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: ios
+          name: ios-ipa
           path: ios_no_sign.ipa
           retention-days: 30
+
